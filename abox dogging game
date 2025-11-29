@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Mini Game</title>
+<style>
+    body { margin:0; overflow:hidden; background:#111; }
+    #player {
+        width:40px; height:40px; background:#0f0;
+        position:absolute; bottom:20px; left:50%;
+        transform:translateX(-50%);
+    }
+    #enemy {
+        width:40px; height:40px; background:#f00;
+        position:absolute; top:-50px; left:0;
+    }
+    #score {
+        color:white; font-size:22px; position:absolute; top:10px; left:10px;
+    }
+</style>
+</head>
+<body>
+
+<div id="player"></div>
+<div id="enemy"></div>
+<div id="score">Score: 0</div>
+
+<script>
+    const player = document.getElementById("player");
+    const enemy  = document.getElementById("enemy");
+    const scoreText = document.getElementById("score");
+
+    let score = 0;
+    let playerX = window.innerWidth/2;
+    let enemyX = Math.random() * window.innerWidth;
+
+    document.addEventListener("mousemove", e => {
+        player.style.left = e.clientX - 20 + "px";
+    });
+
+    function gameLoop() {
+        let enemyTop = parseInt(enemy.style.top || "-50");
+        enemyTop += 8;
+
+        enemy.style.top = enemyTop + "px";
+
+        if (enemyTop > window.innerHeight) {
+            enemy.style.top = "-50px";
+            enemyX = Math.random() * window.innerWidth;
+            enemy.style.left = enemyX + "px";
+            score++;
+            scoreText.textContent = "Score: " + score;
+        }
+
+        let p = player.getBoundingClientRect();
+        let e = enemy.getBoundingClientRect();
+
+        if (!(p.right < e.left || p.left > e.right || p.bottom < e.top || p.top > e.bottom)) {
+            alert("Game Over! Score: " + score);
+            location.reload();
+        }
+
+        requestAnimationFrame(gameLoop);
+    }
+    enemy.style.left = enemyX + "px";
+    gameLoop();
+</script>
+
+</body>
+</html>
